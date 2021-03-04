@@ -3,19 +3,20 @@
 #include <malloc.h>
 #include <math.h>
 #include <ctype.h>
+#include <string.h>
 
-#define ADD 1
-#define PROCESS 2
-#define SHOW 3
-#define CHANGE 4
+#define FULL 1
+#define SHOW 2
+#define CHANGE 3
+#define PREV 4
 #define RANDOM 5
 #define EXIT 6
 
 int working = 1;
 
 int checker(int arr_size)
-/* ������� ��� �������� ����� �� �������������,
-������� � ������� */
+/* Функция для проверки чисел на натуральность,
+пробелы и символы */
 {
     char example_el;
     if (isdigit(scanf("%d", &arr_size)))
@@ -48,44 +49,123 @@ int checker(int arr_size)
 
 }
 
+void fulling(float** matrix, int rows, int col)
+{
+    int warning = 0;
+    int* first_arr = (int*)calloc(rows, sizeof(int));
+    int* second_arr = (int*)calloc(col, sizeof(int));
+
+    printf("Enter elements of the first array\n");
+    for (int i = 0; i < rows; i++)
+    {
+        first_arr[i] = checker(first_arr[i]);
+    }
+    printf("Enter elements of the second array\n");
+    for (int i = 0; i < col; i++)
+    {
+        second_arr[i] = checker(second_arr[i]);
+    }
+
+    // Поиск дубликатов или чисел меньше 1
+    for (int i = 0; i<rows; i++)
+    {
+        for (int j = 0; j<col; j++)
+        {
+            if ((first_arr[i] == second_arr[j]) || (first_arr[i] < 1) || (second_arr[j] < 1))
+                warning += 1;
+        }
+    }
+
+    if (warning > 0)
+    {
+        printf("Incorrect enter\n");
+        warning = 0;
+    }
+    else
+    // Присвоение значений
+    {
+        for (int i = 0; i < rows; i++)
+        {
+            for (int j = 0; j < col; j++)
+            {
+                matrix[i][j] = pow(((first_arr[i])-(second_arr[j])), -1);
+            }
+        }
+        printf("\n");
+    }
+
+    free(first_arr);
+    free(second_arr);
+}
+
 int main()
 {
-    int m = 0;
-    int n = 0;
+    int rows = 0;
+    int col = 0;
     int message = 0;
     printf("Enter the size of the first array: ");
-    m = checker(m);
+    rows = checker(rows);
     printf("Enter the size of the second array: ");
-    n = checker(n);
-    int** matrix = NULL;
-    matrix = (int**)calloc(m, sizeof(int));
-    for (int i = 0; i < m; i++)
+    col = checker(col);
+    float** matrix = NULL;
+    matrix = (float**)calloc(rows, sizeof(float));
+    float** new_matrix = NULL;
+    new_matrix = (float**)calloc(rows, sizeof(float));
+    for (int i = 0; i < rows; i++)
     {
-        matrix[i] = (int*)calloc(n, sizeof(int));
+        matrix[i] = (float*)calloc(col, sizeof(float));
     }
+
+    // Нужно скопироать значение массива без указателей!
     while (working)
     {
-        printf("3. Show your matrix\n");
-        printf("6. Exit\n");
+        printf("1. Fulling your matrix\n");
+        printf("2. Show your matrix\n");
+        printf("3. Change arrays of matrix\n");
+        printf("4. See previous matrix\n");
+        printf("5. Exit\n");
         message = checker(message);
         switch(message)
         {
+        case FULL:
+            new_matrix = matrix;
+            fulling(matrix, rows, col);
+            break;
         case SHOW:
-            for (int i = 0; i < m; i++)
+            printf("Your array\n");
+            for (int i = 0; i < rows; i++)
             {
-                for (int j = 0; j < n; j++)
+                for (int j = 0; j < col; j++)
                 {
-                    printf("%d ", matrix[i][j]);
+                    printf("%.2f ", matrix[i][j]);
                 }
                 printf("\n");
             }
             break;
+        case CHANGE:
+            fulling(matrix, rows, col);
+            break;
+        case PREV:
+            printf("Your array\n");
+            for (int i = 0; i < rows; i++)
+            {
+                for (int j = 0; j < col; j++)
+                {
+                    printf("%.2f ", new_matrix[i][j]);
+                }
+                printf("\n");
+            }
+            break;
+        case RANDOM:
+            printf("");
+            break;
         case EXIT:
-            for (int i = 0; i < n; i++)
+            for (int i = 0; i < col; i++)
                 free(matrix[i]);
             free(matrix);
             printf("Quiting");
             working = 0;
+            break;
         }
     }
 
