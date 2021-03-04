@@ -3,14 +3,12 @@
 #include <malloc.h>
 #include <math.h>
 #include <ctype.h>
-#include <string.h>
 
 #define FULL 1
 #define SHOW 2
 #define CHANGE 3
 #define PREV 4
-#define RANDOM 5
-#define EXIT 6
+#define EXIT 5
 
 int working = 1;
 
@@ -44,6 +42,11 @@ int checker(int arr_size)
     while (example_el != '\n')
     {
         scanf("%c", &example_el);
+    }
+
+    if (arr_size < 0)
+    {
+        working = 0;
     }
     return arr_size;
 
@@ -115,8 +118,22 @@ int main()
     {
         matrix[i] = (float*)calloc(col, sizeof(float));
     }
+    for (int i = 0; i < rows; i++)
+    {
+        new_matrix[i] = (float*)calloc(col, sizeof(float));
+    }
 
-    // Нужно скопироать значение массива без указателей!
+    if (working == 0)
+    {
+        printf("Incorrect enter\n");
+        for (int i = 0; i < col; i++)
+            free(matrix[i]);
+        free(matrix);
+        for (int i = 0; i < col; i++)
+            free(new_matrix[i]);
+        free(new_matrix);
+
+    }
     while (working)
     {
         printf("1. Fulling your matrix\n");
@@ -128,7 +145,14 @@ int main()
         switch(message)
         {
         case FULL:
-            new_matrix = matrix;
+            for (int i = 0; i < rows; i++)
+            {
+                for (int j = 0; j < col; j++)
+                {
+                    new_matrix[i][j] = 0;
+                    new_matrix[i][j] += matrix[i][j];
+                }
+            }
             fulling(matrix, rows, col);
             break;
         case SHOW:
@@ -156,16 +180,18 @@ int main()
                 printf("\n");
             }
             break;
-        case RANDOM:
-            printf("");
-            break;
         case EXIT:
             for (int i = 0; i < col; i++)
                 free(matrix[i]);
             free(matrix);
+            for (int i = 0; i < col; i++)
+                free(new_matrix[i]);
+            free(new_matrix);
             printf("Quiting");
             working = 0;
             break;
+        default:
+            printf("Unusual enter\n");
         }
     }
 
