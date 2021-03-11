@@ -97,31 +97,23 @@ void fulling(float** matrix, int rows, int col, int* first_array, int* second_ar
     }
 }
 
-void det(int* first_array, int* second_array, int rows, int col)
+void det(int* first_arr, int* second_arr, int rows, int col)
 {
-    float det = 0;
-    float first_mul = 1;
-    float second_mul = 1;
-    float third_mul = 1;
-    float fourth_mul = 1;
-    for (int i = 0; i < rows; i++)
-        if (i != 0)
+    int first_mul = 1;
+    int second_mul = 1;
+    for (int i = 1; i < col; i++)
+        for (int j = 0; j < col-1; j++)
         {
-            first_mul *= first_array[i];
+            first_mul *= (first_arr[i] - first_arr[j])*(second_arr[j] - second_arr[i]);
         }
-    for (int i = 0; i < col; i++)
-        if (i != rows-2)
-        {
-            second_mul *= second_array[i];
-        }
-    for (int i = 0; i < rows; i++)
-        third_mul *= first_array[i];
-    for (int i = 0; i < col; i++)
-        fourth_mul *= second_array[i];
 
-    det = (first_mul*second_mul*(first_array[rows-1]-first_array[col-1])*(second_array[rows-1]-second_array[col-1]))
-    /(third_mul*fourth_mul*(first_array[rows-1]-second_array[col-1]));
-    printf("%.2f\n", det);
+    for (int i = 0; i < col; i++)
+        for (int j = 0; j < col; j++)
+        {
+            second_mul *= (first_arr[i] - second_arr[j]);
+        }
+    printf("Your determinant:");
+    printf("%.8f\n", (float)first_mul/second_mul);
 }
 
 int main()
@@ -152,9 +144,12 @@ int main()
     if (working == 0)
     {
         printf("Incorrect enter\n");
+        printf("------------------------------\n");
+        printf("Quiting\n");
     }
     while (working)
     {
+        printf("------------------------------\n");
         printf("1. Fulling your matrix\n");
         printf("2. Show your matrix\n");
         printf("3. Change arrays of matrix\n");
@@ -212,7 +207,8 @@ int main()
             det(first_arr, second_arr, rows, col);
             break;
         case EXIT:
-            printf("Quiting");
+            printf("------------------------------\n");
+            printf("Quiting\n");
             working = 0;
             break;
         default:
@@ -220,10 +216,10 @@ int main()
         }
     }
     // Очистка массивов
-    for (int i = 0; i < col; i++)
+    for (int i = 0; i < rows; i++)
         free(matrix[i]);
     free(matrix);
-    for (int i = 0; i < col; i++)
+    for (int i = 0; i < rows; i++)
         free(new_matrix[i]);
     free(new_matrix);
     free(first_arr);
