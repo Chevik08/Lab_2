@@ -57,16 +57,26 @@ void fulling(float** matrix, int rows, int col, int* first_array, int* second_ar
 // Заполнение матрицы значениями
 {
     int warning = 0;
+    int check = 0;
 
     printf("Enter elements of the first array\n");
     for (int i = 0; i < rows; i++)
     {
-        first_array[i] = checker(first_array[i]);
+        check = checker(first_array[i]);
+        if (check != -1)
+            first_array[i] = check;
+        else
+            warning += 1;
     }
+    check = 0;
     printf("Enter elements of the second array\n");
     for (int i = 0; i < col; i++)
     {
-        second_array[i] = checker(second_array[i]);
+        check = checker(second_array[i]);
+        if (check != -1)
+            second_array[i] = check;
+        else
+            warning += 1;
     }
 
     // Поиск дубликатов или чисел меньше 1
@@ -82,6 +92,7 @@ void fulling(float** matrix, int rows, int col, int* first_array, int* second_ar
     {
         printf("Incorrect enter\n");
         warning = 0;
+        working = 0;
     }
     else
     // Присвоение значений
@@ -127,9 +138,9 @@ int main()
     printf("Enter the size of the second array: ");
     col = checker(col);
     float** matrix = NULL;
-    matrix = (float**)calloc(rows, sizeof(float));
+    matrix = (float**)calloc(rows, sizeof(float*));
     float** new_matrix = NULL;
-    new_matrix = (float**)calloc(rows, sizeof(float));
+    new_matrix = (float**)calloc(rows, sizeof(float*));
     int* first_arr = (int*)calloc(rows, sizeof(int));
     int* second_arr = (int*)calloc(col, sizeof(int));
     for (int i = 0; i < rows; i++)
@@ -144,12 +155,12 @@ int main()
     if (working == 0)
     {
         printf("Incorrect enter\n");
-        printf("------------------------------\n");
+        printf("=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=\n");
         printf("Quiting\n");
     }
     while (working)
     {
-        printf("------------------------------\n");
+        printf("=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=\n");
         printf("1. Fulling your matrix\n");
         printf("2. Show your matrix\n");
         printf("3. Change arrays of matrix\n");
@@ -182,10 +193,10 @@ int main()
             }
             break;
         case CHANGE:
-            for (int i = 0; i < col; i++)
+            for (int i = 0; i < rows; i++)
                 free(matrix[i]);
             free(matrix);
-            for (int i = 0; i < col; i++)
+            for (int i = 0; i < rows; i++)
                 free(new_matrix[i]);
             free(new_matrix);
             free(first_arr);
@@ -207,7 +218,7 @@ int main()
             det(first_arr, second_arr, rows, col);
             break;
         case EXIT:
-            printf("------------------------------\n");
+            printf("=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=\n");
             printf("Quiting\n");
             working = 0;
             break;
